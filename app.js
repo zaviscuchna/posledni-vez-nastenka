@@ -95,7 +95,7 @@ function toast(msg, bad = false) {
 const nameOf = (login) => CFG.team.find((m) => m.login === login)?.name || login;
 
 function slug(s) {
-  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'navrh';
 }
 

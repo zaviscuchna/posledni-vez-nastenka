@@ -34,6 +34,8 @@ https://zaviscuchna.github.io/posledni-vez-nastenka/ (obnovit stránku).
   - hlas = reakce 👍 / 👎 na issue
   - obrázky = soubory v `board/navrhy/…/vN.ext`, seznam je v těle issue
     v komentáři `<!-- nastenka {"files":[...]} -->`
+    (cesty mimo `board/navrhy/<složka>/<soubor>` nástěnka ignoruje, viz `jeNavrh()`: tělo issue
+    může upravit kdokoli a správce by jinak svým klíčem smazal cizí soubor)
   - schválená grafika se kopíruje do `docs/art/<kategorie>/` (mapa `ART_DIR` v `app.js`,
     musí sedět se složkami v `docs/art` herního repa a s `docs/art/assety.json`: postavy,
     nepratele, stavby, prostredi, predmety, ui, efekty)

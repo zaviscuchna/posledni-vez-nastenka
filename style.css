@@ -466,6 +466,13 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
   .compose-paticka .btn { flex: 1; min-height: 48px; }
   .compose input, .compose select, .compose textarea, .comment-form textarea { font-size: 16px; } /* iOS jinak přibližuje */
   .navod-text { padding: 10px 16px 24px; }
+  /* .dlg.navod má na počítači vlastní šířku a výšku, na telefonu je přes celou obrazovku jako ostatní okna */
+  .dlg.navod { width: 100vw; max-height: 100dvh; height: 100dvh; }
+  .navod-hlava { position: relative; padding: 12px 60px 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); }
+  .navod-hlava h2 { font-size: 22px; }
+  .navod-hlava .icon-btn { position: absolute; top: max(8px, env(safe-area-inset-top)); right: 8px; width: var(--tap); height: var(--tap); }
+  /* Detail se posouvá celý, tak ať ✕ zůstane nahoře i po sjetí ke komentářům */
+  .detail-grid > .close { position: fixed; top: max(10px, env(safe-area-inset-top)); right: 10px; width: var(--tap); height: var(--tap); }
   .toast { bottom: calc(150px + env(safe-area-inset-bottom)); }
 }
 @media (max-width: 380px) {
