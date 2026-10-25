@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1016">
+<title>Poslední věž · nástěnka</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'><rect width='8' height='8' fill='%230b1016'/><rect x='2' y='1' width='4' height='7' fill='%23596a73'/><rect x='1' y='0' width='1' height='2' fill='%23596a73'/><rect x='6' y='0' width='1' height='2' fill='%23596a73'/><rect x='3' y='0' width='2' height='1' fill='%23596a73'/><rect x='3' y='3' width='2' height='2' fill='%23f0b43c'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Jersey+10&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20261025a">
+</head>
+<body>
+
+<!-- Přihlášení -->
+<section id="login" class="login" hidden>
+  <div class="login-box">
+    <div class="vez" aria-hidden="true"></div>
+    <h1>Poslední věž</h1>
+    <p class="login-sub">nástěnka nápadů, grafiky a úkolů</p>
+    <p>Data leží v soukromém repu <code>matyzek/posledni-vez</code>, takže se přihlašuješ svým GitHubem.</p>
+    <ol>
+      <li><a id="token-link" target="_blank" rel="noopener">Vytvoř si klíč na GitHubu</a>
+        (zaškrtnuté <code>repo</code> nech, platnost klidně 90 dní).</li>
+      <li>Klíč zkopíruj a vlož sem:</li>
+    </ol>
+    <form id="login-form">
+      <input id="token" type="password" placeholder="ghp_…" autocomplete="off" required>
+      <button class="btn primary" type="submit">Přihlásit</button>
+    </form>
+    <p id="login-err" class="err"></p>
+    <p class="muted small">Klíč zůstává jen v tomhle prohlížeči a posílá se jen na api.github.com.</p>
+  </div>
+  <div class="les" aria-hidden="true"></div>
+</section>
+
+<!-- Aplikace -->
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand"><span class="brand-vez" aria-hidden="true"></span><span>Poslední věž</span><small>nástěnka</small></div>
+    <nav class="tabs" id="tabs" aria-label="Sekce">
+      <button data-tab="vse" class="on"><span class="ico" aria-hidden="true">✦</span><span>Vše</span></button>
+      <button data-tab="napad"><span class="ico" aria-hidden="true">💡</span><span>Nápady</span></button>
+      <button data-tab="grafika"><span class="ico" aria-hidden="true">🎨</span><span>Grafika</span></button>
+      <button data-tab="rozhodnuti"><span class="ico" aria-hidden="true">⚖</span><span>Rozhodnutí</span></button>
+      <button data-tab="stavba"><span class="ico" aria-hidden="true">🔨</span><span>Stavba</span></button>
+    </nav>
+    <div class="top-actions">
+      <button class="btn" id="gdd" title="Jak hra funguje: docs/GDD.md v herním repu">📖 <span class="jen-pc">GDD</span></button>
+      <button class="btn" id="navod" title="Jak vyrábět grafiku do hry (docs/art v herním repu)">📜 <span class="jen-pc">Návod na grafiku</span></button>
+      <button class="icon-btn" id="refresh" title="Načíst znovu" aria-label="Načíst znovu">⟳</button>
+      <img id="me" class="avatar" alt="" title="Odhlásit">
+      <button class="btn primary pridat" id="new-item" aria-label="Přidat"><span class="plus" aria-hidden="true">+</span><span class="jen-pc"> Přidat</span></button>
+    </div>
+  </header>
+
+  <div id="stitky" class="banner" hidden></div>
+
+  <div class="filters">
+    <div class="chips" id="state-chips">
+      <button data-state="novy" class="on">Nové</button>
+      <button data-state="diskuse" class="on">Diskuse</button>
+      <button data-state="schvaleno">Schválené</button>
+      <button data-state="zamitnuto">Zamítnuté</button>
+    </div>
+    <select id="cat-filter" aria-label="Oblast">
+      <option value="">Všechny oblasti</option>
+    </select>
+    <span id="count" class="muted small"></span>
+  </div>
+
+  <main id="grid" class="grid"></main>
+  <main id="board" class="board" hidden></main>
+  <p id="empty" class="empty" hidden></p>
+</div>
+
+<!-- Detail -->
+<dialog id="detail" class="dlg detail"></dialog>
+<dialog id="navod-dlg" class="dlg navod"></dialog>
+
+<!-- Nový příspěvek -->
+<dialog id="compose" class="dlg compose">
+  <form id="compose-form" method="dialog">
+    <div class="compose-hlava">
+      <h2 id="compose-title">Přidat</h2>
+      <button class="icon-btn" value="cancel" formnovalidate title="Zavřít" aria-label="Zavřít">✕</button>
+    </div>
+    <div class="type-seg" id="compose-type">
+      <button type="button" data-type="napad">Nápad</button>
+      <button type="button" data-type="grafika">Grafika</button>
+      <button type="button" data-type="rozhodnuti">Rozhodnutí</button>
+      <button type="button" data-type="stavba">Úkol</button>
+    </div>
+    <p class="muted small" id="compose-hint" style="margin:0"></p>
+    <label>Název
+      <input name="title" required maxlength="120" placeholder="Např. Lučištník na hradbě">
+    </label>
+    <label id="cat-wrap">Oblast
+      <select name="cat" id="compose-cat"></select>
+    </label>
+    <label>Popis
+      <textarea name="body" rows="5" placeholder="Klidně jedna věta."></textarea>
+    </label>
+    <label id="opts-wrap" hidden>Možnosti (každá na nový řádek, aspoň dvě)
+      <textarea name="opts" rows="4" placeholder="Věž střílí sama&#10;Věž střílí jen s lučištníkem"></textarea>
+    </label>
+    <div class="drop" id="drop">
+      <input type="file" id="files" accept="image/*" multiple hidden>
+      <button type="button" class="btn foto" id="pick">📷 Přidat obrázek</button>
+      <p class="small muted jen-pc">nebo je přetáhni sem / vlož přes Ctrl+V</p>
+      <div class="previews" id="previews"></div>
+    </div>
+    <p class="err" id="compose-err"></p>
+    <div class="row end compose-paticka">
+      <button class="btn" value="cancel" formnovalidate>Zrušit</button>
+      <button class="btn primary" id="compose-send" value="send">Přidat</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script type="module" src="app.js?v=20261025a"></script>
+</body>
+</html>
