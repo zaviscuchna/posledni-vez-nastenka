@@ -163,6 +163,11 @@ async function ghAll(path) {
   return out;
 }
 
+// Cesty k obrázkům se čtou z těla issue, které může upravit kdokoli s přístupem k repu.
+// Bez téhle kontroly by šlo do seznamu podstrčit třeba src/main.ts a správce by ho
+// svým klíčem smazal (mazání příspěvku) nebo by se do jeho složky nahrávalo.
+const jeNavrh = (p) => typeof p === 'string' && /^board\/navrhy\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(p) && !p.split('/').includes('..');
+
 const encPath = (p) => p.split('/').map(encodeURIComponent).join('/');
 
 const imgCache = new Map();
@@ -258,7 +263,7 @@ function parseIssue(issue) {
     type,
     state: st,
     cats: labels.filter((l) => CATS.napad.includes(l) || CATS.grafika.includes(l)),
-    files: Array.isArray(meta.files) ? meta.files : [],
+    files: Array.isArray(meta.files) ? meta.files.filter(jeNavrh) : [],
     external,
     meta,
     rawBody: body,
